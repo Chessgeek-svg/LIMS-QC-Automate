@@ -1,0 +1,26 @@
+services:
+  # The Database Service
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password123
+      - POSTGRES_DB=openlims_db
+    ports:
+      - "5432:5432"
+
+  # The FastAPI Service (Backend)
+  api:
+    build: .
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password123@db:5432/openlims_db
+    depends_on:
+      - db
+volumes:
+  postgres_data:
